@@ -1,4 +1,4 @@
-import { Container, Image, Row, Button, Col, Card } from 'react-bootstrap';
+import { Container, Row, Button, Col, Card } from 'react-bootstrap';
 import React, { Component } from 'react';
 import './App.css';
 
@@ -7,32 +7,47 @@ class App extends Component {
     super(props);
     this.state = {
       pic: '',
-      pos1: 0,
-      pos2: 0,
-      pos3: 0,
-      pos4: 0,
-      pos5: 0,
-      pos6: 0,
-      pos7: 0,
-      pos8: 0,
-      pos9: 0,
+      pos1: false,
+      pos2: false,
+      pos3: false,
+      pos4: false,
+      pos5: false,
+      pos6: false,
+      pos7: false,
+      pos8: false,
+      pos9: false,
       count: 1,
-      row1: [],
-      row2: [],
-      row3: []
+      row1: 0,
+      row2: 0,
+      row3: 0,
+      column1: 0,
+      column2: 0,
+      column3: 0,
+      diagonal1: 0,
+      diagonal2: 0,
+      winnerFound: false,
+      winnerText: ''
     };
   }
 
-  componentDidMount() {
-    const intervalId = setInterval(this.timer, 500);
-    this.setState({ 
-      intervalId,
-      row1: [(this.state.pos1 % 2), (this.state.pos2 % 2), (this.state.pos3 % 2)]
-     });
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+  checkWinner() {
+    if (this.state.row1 === 3 || this.state.row2 === 3 || this.state.row3 === 3 || this.state.column1 === 3 || this.state.column2 === 3 || this.state.column3 === 3 || this.state.diagonal1 === 3 || this.state.diagonal2 === 3) {
+      this.setState({
+        winnerFound: true,
+        show: true,
+        handleClose: false,
+        winnerText: 'The winner is X'
+      });
+    }
+    else if (this.state.row1 === -3 || this.state.row2 === -3 || this.state.row3 === -3 || this.state.column1 === -3 || this.state.column2 === -3 || this.state.column3 === -3 || this.state.diagonal1 === -3 || this.state.diagonal2 === -3) {
+      this.setState({
+        winnerFound: true,
+        show: true,
+        handleClose: false,
+        winnerText: 'The winner is O'
+      });
+    }
+    console.log(this.state.row1)
   }
 
   render() {
@@ -40,15 +55,32 @@ class App extends Component {
       <div className="App">
         <Container>
           <Row>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos1 === 0){
+            <Button disabled={this.state.winnerFound} disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos1) {
                 this.setState({
                   pos1: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos1 % 2) {
+                    this.setState({
+                      row1: this.state.row1 + 1,
+                      column1: this.state.column1 + 1,
+                      diagonal1: this.state.diagonal1 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row1: this.state.row1 - 1,
+                      column1: this.state.column1 - 1,
+                      diagonal1: this.state.diagonal1 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
-              console.log(this.state.row1)
             }}>
               <Col xs={6} md={4}>
                 <Card
@@ -58,18 +90,35 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos1 % 2) && this.state.pos1 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos1 % 2) && this.state.pos1 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos1 % 2) && this.state.pos1 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos1 % 2) && this.state.pos1 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
-            <Button onClick={() => {
-              if (this.state.pos2 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos2) {
                 this.setState({
                   pos2: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos2 % 2) {
+                    this.setState({
+                      row1: this.state.row1 + 1,
+                      column2: this.state.column2 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row1: this.state.row1 - 1,
+                      column2: this.state.column2 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -80,19 +129,37 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos2 % 2) && this.state.pos2 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos2 % 2) && this.state.pos2 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos2 % 2) && this.state.pos2 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos2 % 2) && this.state.pos2 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos3 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos3) {
                 this.setState({
                   pos3: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos3 % 2) {
+                    this.setState({
+                      row1: this.state.row1 + 1,
+                      column2: this.state.column3 + 1,
+                      diagonal2: this.state.diagonal2 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row1: this.state.row1 - 1,
+                      column2: this.state.column3 - 1,
+                      diagonal2: this.state.diagonal2 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -103,21 +170,37 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos3 % 2) && this.state.pos3 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos3 % 2) && this.state.pos3 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos3 % 2) && this.state.pos3 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos3 % 2) && this.state.pos3 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
           </Row>
           <Row>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos4 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos4) {
                 this.setState({
                   pos4: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos4 % 2) {
+                    this.setState({
+                      row2: this.state.row2 + 1,
+                      column1: this.state.column1 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row2: this.state.row2 - 1,
+                      column1: this.state.column1 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -128,19 +211,39 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos4 % 2) && this.state.pos4 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos4 % 2) && this.state.pos4 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos4 % 2) && this.state.pos4 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos4 % 2) && this.state.pos4 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos5 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos5) {
                 this.setState({
                   pos5: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos5 % 2) {
+                    this.setState({
+                      row2: this.state.row2 + 1,
+                      column2: this.state.column2 + 1,
+                      diagonal1: this.state.diagonal1 + 1,
+                      diagonal2: this.state.diagonal2 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row2: this.state.row2 - 1,
+                      column2: this.state.column2 - 1,
+                      diagonal1: this.state.diagonal1 - 1,
+                      diagonal2: this.state.diagonal2 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -151,19 +254,35 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos5 % 2) && this.state.pos5 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos5 % 2) && this.state.pos5 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos5 % 2) && this.state.pos5 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos5 % 2) && this.state.pos5 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos6 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos6) {
                 this.setState({
                   pos6: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos6 % 2) {
+                    this.setState({
+                      row2: this.state.row2 + 1,
+                      column2: this.state.column3 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row2: this.state.row2 - 1,
+                      column2: this.state.column3 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -174,21 +293,39 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos6 % 2) && this.state.pos6 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos6 % 2) && this.state.pos6 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos6 % 2) && this.state.pos6 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos6 % 2) && this.state.pos6 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
           </Row>
           <Row>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos7 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos7) {
                 this.setState({
                   pos7: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos7 % 2) {
+                    this.setState({
+                      row3: this.state.row3 + 1,
+                      column1: this.state.column1 + 1,
+                      diagonal2: this.state.diagonal2 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row3: this.state.row3 - 1,
+                      column1: this.state.column1 - 1,
+                      diagonal2: this.state.diagonal2 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -199,19 +336,35 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos7 % 2) && this.state.pos7 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos7 % 2) && this.state.pos7 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos7 % 2) && this.state.pos7 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos7 % 2) && this.state.pos7 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos8 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos8) {
                 this.setState({
                   pos8: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos8 % 2) {
+                    this.setState({
+                      row3: this.state.row3 + 1,
+                      column2: this.state.column2 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row3: this.state.row3 - 1,
+                      column2: this.state.column2 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -222,19 +375,37 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos8 % 2) && this.state.pos8 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos8 % 2) && this.state.pos8 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos8 % 2) && this.state.pos8 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos8 % 2) && this.state.pos8 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
-            <Button onClick={() => {
-              console.log(this.state.count)
-              if (this.state.pos9 === 0){
+            <Button disabled={this.state.winnerFound} onClick={() => {
+              if (!this.state.pos9) {
                 this.setState({
                   pos9: this.state.count,
                   count: this.state.count + 1
-                })
+                }, () => {
+                  if (this.state.pos9 % 2) {
+                    this.setState({
+                      row3: this.state.row3 + 1,
+                      column2: this.state.column3 + 1,
+                      diagonal1: this.state.diagonal1 + 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                  else {
+                    this.setState({
+                      row3: this.state.row3 - 1,
+                      column2: this.state.column3 - 1,
+                      diagonal1: this.state.diagonal1 - 1
+                    }, () => {
+                      this.checkWinner()
+                    })
+                  }
+                });
               }
             }}>
               <Col xs={6} md={4}>
@@ -245,14 +416,23 @@ class App extends Component {
                   className="mb-2"
                 >
                   <Card.Body>
-                  { !!(this.state.pos9 % 2) && this.state.pos9 !== 0 && <Card.Img src={window.location.origin + '/playX.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
-                    { !(this.state.pos9 % 2) && this.state.pos9 !== 0 && <Card.Img src={window.location.origin + '/playO.png'} style={{height: 300, alignItems: "center" }} alt="Card image" /> }
+                    {!!(this.state.pos9 % 2) && this.state.pos9 && <Card.Img src={window.location.origin + '/playX.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
+                    {!(this.state.pos9 % 2) && this.state.pos9 && <Card.Img src={window.location.origin + '/playO.png'} style={{ height: 300, alignItems: "center" }} alt="Card image" />}
                   </Card.Body>
                 </Card>
               </Col>
             </Button>
           </Row>
         </Container>
+        {this.state.winnerFound &&
+          <Card bg="primary" text="white" className="text-center p-3">
+          <blockquote className="blockquote mb-0 card-body">
+            <p>
+              {this.state.winnerText}
+            </p>
+          </blockquote>
+        </Card>
+        }
       </div>
     );
   }
