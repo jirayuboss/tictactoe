@@ -1,4 +1,4 @@
-import { Container, Row, Button, Col, Card } from 'react-bootstrap';
+import { Container, Row, Button, Col, Card, Spinner } from 'react-bootstrap';
 import React, { Component } from 'react';
 import './App.css';
 
@@ -26,8 +26,70 @@ class App extends Component {
       diagonal1: 0,
       diagonal2: 0,
       winnerFound: false,
-      winnerText: ''
+      winnerText: '',
+      history: []
     };
+  }
+
+  restart() {
+    this.setState({
+      pic: '',
+      pos1: false,
+      pos2: false,
+      pos3: false,
+      pos4: false,
+      pos5: false,
+      pos6: false,
+      pos7: false,
+      pos8: false,
+      pos9: false,
+      count: 1,
+      row1: 0,
+      row2: 0,
+      row3: 0,
+      column1: 0,
+      column2: 0,
+      column3: 0,
+      diagonal1: 0,
+      diagonal2: 0,
+      winnerFound: false,
+      winnerText: '',
+      history: [],
+      isReplay: false
+    })
+  }
+
+  replay = async () => {
+    this.setState({
+      pos1: false,
+      pos2: false,
+      pos3: false,
+      pos4: false,
+      pos5: false,
+      pos6: false,
+      pos7: false,
+      pos8: false,
+      pos9: false,
+      isReplay: true
+    }, () => {
+      this.state.history.forEach((object, index) => {
+        setTimeout(() => {
+          let pos = object.pos;
+          let posVal = object.value;
+          if (index + 1 === this.state.history.length) {
+            this.setState({
+              [pos]: posVal,
+              isReplay: false
+            })
+          }
+          else {
+            this.setState({
+              [pos]: posVal
+            })
+          }
+        }, index * 1000);
+      });
+    });
   }
 
   checkWinner() {
@@ -47,15 +109,17 @@ class App extends Component {
         winnerText: 'The winner is O'
       });
     }
-    console.log(this.state.row1)
   }
 
   render() {
     return (
       <div className="App">
         <Container>
+          <h1>
+            Tic Tac Toe!
+          </h1>
           <Row>
-            <Button disabled={this.state.winnerFound} disabled={this.state.winnerFound} onClick={() => {
+            <Button disabled={this.state.winnerFound} onClick={() => {
               if (!this.state.pos1) {
                 this.setState({
                   pos1: this.state.count,
@@ -65,7 +129,8 @@ class App extends Component {
                     this.setState({
                       row1: this.state.row1 + 1,
                       column1: this.state.column1 + 1,
-                      diagonal1: this.state.diagonal1 + 1
+                      diagonal1: this.state.diagonal1 + 1,
+                      history: this.state.history.concat({ pos: "pos1", value: this.state.pos1 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -74,7 +139,8 @@ class App extends Component {
                     this.setState({
                       row1: this.state.row1 - 1,
                       column1: this.state.column1 - 1,
-                      diagonal1: this.state.diagonal1 - 1
+                      diagonal1: this.state.diagonal1 - 1,
+                      history: this.state.history.concat({ pos: "pos1", value: this.state.pos1 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -105,7 +171,8 @@ class App extends Component {
                   if (this.state.pos2 % 2) {
                     this.setState({
                       row1: this.state.row1 + 1,
-                      column2: this.state.column2 + 1
+                      column2: this.state.column2 + 1,
+                      history: this.state.history.concat({ pos: "pos2", value: this.state.pos2 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -113,7 +180,8 @@ class App extends Component {
                   else {
                     this.setState({
                       row1: this.state.row1 - 1,
-                      column2: this.state.column2 - 1
+                      column2: this.state.column2 - 1,
+                      history: this.state.history.concat({ pos: "pos2", value: this.state.pos2 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -144,8 +212,9 @@ class App extends Component {
                   if (this.state.pos3 % 2) {
                     this.setState({
                       row1: this.state.row1 + 1,
-                      column2: this.state.column3 + 1,
-                      diagonal2: this.state.diagonal2 + 1
+                      column3: this.state.column3 + 1,
+                      diagonal2: this.state.diagonal2 + 1,
+                      history: this.state.history.concat({ pos: "pos3", value: this.state.pos3 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -153,8 +222,9 @@ class App extends Component {
                   else {
                     this.setState({
                       row1: this.state.row1 - 1,
-                      column2: this.state.column3 - 1,
-                      diagonal2: this.state.diagonal2 - 1
+                      column3: this.state.column3 - 1,
+                      diagonal2: this.state.diagonal2 - 1,
+                      history: this.state.history.concat({ pos: "pos3", value: this.state.pos3 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -187,7 +257,8 @@ class App extends Component {
                   if (this.state.pos4 % 2) {
                     this.setState({
                       row2: this.state.row2 + 1,
-                      column1: this.state.column1 + 1
+                      column1: this.state.column1 + 1,
+                      history: this.state.history.concat({ pos: "pos4", value: this.state.pos4 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -195,7 +266,8 @@ class App extends Component {
                   else {
                     this.setState({
                       row2: this.state.row2 - 1,
-                      column1: this.state.column1 - 1
+                      column1: this.state.column1 - 1,
+                      history: this.state.history.concat({ pos: "pos4", value: this.state.pos4 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -228,7 +300,8 @@ class App extends Component {
                       row2: this.state.row2 + 1,
                       column2: this.state.column2 + 1,
                       diagonal1: this.state.diagonal1 + 1,
-                      diagonal2: this.state.diagonal2 + 1
+                      diagonal2: this.state.diagonal2 + 1,
+                      history: this.state.history.concat({ pos: "pos5", value: this.state.pos5 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -238,7 +311,8 @@ class App extends Component {
                       row2: this.state.row2 - 1,
                       column2: this.state.column2 - 1,
                       diagonal1: this.state.diagonal1 - 1,
-                      diagonal2: this.state.diagonal2 - 1
+                      diagonal2: this.state.diagonal2 - 1,
+                      history: this.state.history.concat({ pos: "pos5", value: this.state.pos5 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -269,7 +343,8 @@ class App extends Component {
                   if (this.state.pos6 % 2) {
                     this.setState({
                       row2: this.state.row2 + 1,
-                      column2: this.state.column3 + 1
+                      column3: this.state.column3 + 1,
+                      history: this.state.history.concat({ pos: "pos6", value: this.state.pos6 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -277,7 +352,8 @@ class App extends Component {
                   else {
                     this.setState({
                       row2: this.state.row2 - 1,
-                      column2: this.state.column3 - 1
+                      column3: this.state.column3 - 1,
+                      history: this.state.history.concat({ pos: "pos6", value: this.state.pos6 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -311,7 +387,8 @@ class App extends Component {
                     this.setState({
                       row3: this.state.row3 + 1,
                       column1: this.state.column1 + 1,
-                      diagonal2: this.state.diagonal2 + 1
+                      diagonal2: this.state.diagonal2 + 1,
+                      history: this.state.history.concat({ pos: "pos7", value: this.state.pos7 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -320,7 +397,8 @@ class App extends Component {
                     this.setState({
                       row3: this.state.row3 - 1,
                       column1: this.state.column1 - 1,
-                      diagonal2: this.state.diagonal2 - 1
+                      diagonal2: this.state.diagonal2 - 1,
+                      history: this.state.history.concat({ pos: "pos7", value: this.state.pos7 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -351,7 +429,8 @@ class App extends Component {
                   if (this.state.pos8 % 2) {
                     this.setState({
                       row3: this.state.row3 + 1,
-                      column2: this.state.column2 + 1
+                      column2: this.state.column2 + 1,
+                      history: this.state.history.concat({ pos: "pos8", value: this.state.pos8 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -359,7 +438,8 @@ class App extends Component {
                   else {
                     this.setState({
                       row3: this.state.row3 - 1,
-                      column2: this.state.column2 - 1
+                      column2: this.state.column2 - 1,
+                      history: this.state.history.concat({ pos: "pos8", value: this.state.pos8 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -390,8 +470,9 @@ class App extends Component {
                   if (this.state.pos9 % 2) {
                     this.setState({
                       row3: this.state.row3 + 1,
-                      column2: this.state.column3 + 1,
-                      diagonal1: this.state.diagonal1 + 1
+                      column3: this.state.column3 + 1,
+                      diagonal1: this.state.diagonal1 + 1,
+                      history: this.state.history.concat({ pos: "pos9", value: this.state.pos9 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -399,8 +480,9 @@ class App extends Component {
                   else {
                     this.setState({
                       row3: this.state.row3 - 1,
-                      column2: this.state.column3 - 1,
-                      diagonal1: this.state.diagonal1 - 1
+                      column3: this.state.column3 - 1,
+                      diagonal1: this.state.diagonal1 - 1,
+                      history: this.state.history.concat({ pos: "pos9", value: this.state.pos9 })
                     }, () => {
                       this.checkWinner()
                     })
@@ -425,13 +507,39 @@ class App extends Component {
           </Row>
         </Container>
         {this.state.winnerFound &&
-          <Card bg="primary" text="white" className="text-center p-3">
-          <blockquote className="blockquote mb-0 card-body">
-            <p>
+          <Container>
+            <h2>
               {this.state.winnerText}
-            </p>
-          </blockquote>
-        </Card>
+            </h2>
+            {!this.state.isReplay && <Button variant="primary" size="lg" block onClick={() => {
+              this.restart()
+            }}>
+              Restart
+            </Button>
+            }
+            {this.state.isReplay && <Button variant="primary" size="lg" disabled block onClick={() => {
+              this.restart()
+            }}>
+              Restart
+            </Button>
+            }
+            {this.state.isReplay && <Button variant="primary" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              <span className="sr-only">Replaying...</span>
+            </Button>}
+            {!this.state.isReplay && <Button variant="secondary" size="lg" block async onClick={() => {
+              this.replay();
+            }}>
+              Replay
+             </Button>
+            }
+          </Container>
         }
       </div>
     );
